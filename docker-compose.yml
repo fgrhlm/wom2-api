@@ -16,7 +16,7 @@ services:
             - stugmaklare-net
         command: "npm start"
         profiles:
-            - production
+            - prod
     stugmaklare-db:
         # Lånat lite därifrån
         # https://hub.docker.com/_/mongo
