@@ -13,7 +13,8 @@ services:
         ports:
             - 8080:8080
         networks:
-            - stugmaklare-net
+            - stugmaklare-public
+            - stugmaklare-private
         command: "npm start"
         profiles:
             - prod
@@ -29,7 +30,7 @@ services:
         ports:
             - 8081:8081
         networks:
-            - stugmaklare-net
+            - stugmaklare-private
 
 
     stugmaklare-api-dev:
@@ -44,7 +45,8 @@ services:
         ports:
             - 8080:8080
         networks:
-            - stugmaklare-net
+            - stugmaklare-public
+            - stugmaklare-private
         volumes:
             - "./app:/home/node/app"
         profiles:
@@ -53,6 +55,9 @@ services:
         command: "npm run dev"
 
 networks:
-    stugmaklare-net:
-        name: stugmaklare-net
+    stugmaklare-public:
+        name: stugmaklare-public
         external: true
+    stugmaklare-private:
+        name: stugmaklare-private
+        external: false
