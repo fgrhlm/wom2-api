@@ -36,7 +36,7 @@ services:
     stugmaklare-api-dev:
     # !! OBS !! INSTALLERA PAKETEN LOKALT !! OBS !! NPM INSTALL KÖRS INTE I DENNA SERVICE !! OBS !!
     # samma som api bara att koden+node_modules mountas som volym istället, byggs även direkt från
-    # node:latest istället för Dockerfile
+    # node:latest istället för app/Dockerfile
     # mer info https://docs.docker.com/compose/compose-file/compose-file-v3/#short-syntax-3
     # denna version kör även nodemon så koden hot-reloadas vid save
         container_name: "stugmaklare-api-dev"
