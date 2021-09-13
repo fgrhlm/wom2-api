@@ -28,7 +28,9 @@ services:
             MONGO_INITDB_ROOT_USERNAME: root
             MONGO_INITDB_ROOT_PASSWORD: toor
         ports:
-            - 8081:8081
+            - 27017:27017
+        profiles:
+            - prod
         networks:
             - stugmaklare-private
 
@@ -46,13 +48,28 @@ services:
             - 8080:8080
         networks:
             - stugmaklare-public
-            - stugmaklare-private
         volumes:
             - "./app:/home/node/app"
         profiles:
             - dev
         working_dir: "/home/node/app"
         command: "npm run dev"
+
+    stugmaklare-db-dev:
+        # Lånat lite därifrån
+        # https://hub.docker.com/_/mongo
+        container_name: "stugmaklare-db-dev"
+        image: mongo:latest
+        restart: unless-stopped
+        profiles:
+            - dev
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: toor
+        ports:
+            - 27017:27017
+        networks:
+            - stugmaklare-public
 
 networks:
     stugmaklare-public:
