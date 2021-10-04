@@ -1,0 +1,39 @@
+### Testfil för VSCode-tillägget REST Client
+
+@baseUrl = http://localhost:8080
+@bookingId = _
+@cabinId = _
+@token = _
+
+### Booking -> utan id = ger tillbaka ALLA booking dokument
+GET {{baseUrl}}/booking
+Authorization: Bearer {{token}} 
+
+### Cabin -> med id = ger tillbaka ETT cabin dokument
+GET {{baseUrl}}/booking/{{bookingId}}
+Authorization: Bearer {{token}} 
+
+### Cabin -> skapa ny cabin
+POST {{baseUrl}}/booking
+content-type: application/json
+
+{
+    "cabin_id": {{cabinId}},
+    "booked_from": "2021-03-01T00:00:00.000Z",
+    "booked_to": "2021-04-01T00:00:00.000Z",
+}
+
+### Booking -> updatera booking
+PUT {{baseUrl}}/booking/{{bookingId}}
+content-type: application/json
+Authorization: Bearer {{token}} 
+
+{
+    "cabin_id": {{cabinId}},
+    "booked_from": "2021-03-01T00:00:00.000Z",
+    "booked_to": "2021-05-01T00:00:00.000Z",
+}
+
+### Booking -> ta bort en booking
+DELETE {{baseUrl}}/booking/{{bookingId}}
+Authorization: Bearer {{token}} 

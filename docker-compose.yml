@@ -13,11 +13,13 @@ services:
         ports:
             - 8080:8080
         networks:
-            - stugmaklare-public
-            - stugmaklare-private
+            stugmaklare-public:
+            stugmaklare-private:
+                ipv4_address: 10.0.0.2
         command: "npm start"
         profiles:
             - prod
+
     stugmaklare-db:
         # Lånat lite därifrån
         # https://hub.docker.com/_/mongo
@@ -32,7 +34,8 @@ services:
         profiles:
             - prod
         networks:
-            - stugmaklare-private
+            stugmaklare-private:
+                ipv4_address: 10.0.0.3
 
 
     stugmaklare-api-dev:
@@ -47,7 +50,9 @@ services:
         ports:
             - 8080:8080
         networks:
-            - stugmaklare-public
+            stugmaklare-public:
+            stugmaklare-private:
+                ipv4_address: 10.0.0.2
         volumes:
             - "./app:/home/node/app"
         profiles:
@@ -69,8 +74,12 @@ services:
         ports:
             - 27017:27017
         networks:
-            - stugmaklare-public
+            stugmaklare-private:
+                ipv4_address: 10.0.0.3
 
+# Services i stugmaklare har statiska ip addresser:
+#   api -> 10.0.0.2
+#   db  -> 10.0.0.3
 networks:
     stugmaklare-public:
         name: stugmaklare-public
@@ -78,3 +87,7 @@ networks:
     stugmaklare-private:
         name: stugmaklare-private
         external: false
+        ipam:
+            driver: default
+            config:
+                - subnet: 10.0.0.0/24
