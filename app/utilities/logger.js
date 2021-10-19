@@ -1,7 +1,10 @@
 import winston from "winston";
 import expressWinston from "express-winston";
 
-// Logging - https://www.npmjs.com/package/express-winston
+// Logging
+// Lånat härifrån https://www.npmjs.com/package/express-winston
+
+
 const logger = new expressWinston.logger({
     transports: [
         new winston.transports.Console()
@@ -11,7 +14,7 @@ const logger = new expressWinston.logger({
         winston.format.colorize()
     ),
     meta: false,
-    msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+    msg: "HTTP {{req.method}} {{req.url}}",
     colorize: true,
 })
 

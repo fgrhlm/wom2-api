@@ -1,10 +1,10 @@
-import UserService from "../services/user.service.js";
+import CabinserviceService from "../services/cabinservice.service.js";
 
-const UserController = {
+const CabinserviceController = {
     findOne: async (req,res,next) => {
         try{
-            const user = await UserService.findOne(req.params.id)
-            return res.status(200).json(user);
+            const cabinservice = await CabinserviceService.findOne(req.params.id)
+            return res.status(200).json(cabinservice);
         }catch (e){
             return res.status(500).json({error: e.message})
         }
@@ -12,25 +12,23 @@ const UserController = {
     },
     findAll: async (req,res) => {
         try{
-            const users = await UserService.findAll();
-            return res.status(200).json(users);
+            const cabinservices = await CabinserviceService.findAll();
+            return res.status(200).json(cabinservices);
         }catch (e){
             res.status(500).json({error: e.message});
         }
     },
     create: async (req,res) => {
         try{
-            const doc = await UserService.create(req.body);
+            const doc = await CabinserviceService.create(req.body);
             return res.status(200).json(doc);
         }catch (e){
             return res.status(500).json({error: e.message});
         }
     },
     deleteOne: async (req,res) => {
-        if(req.authUser.sub != req.params.id) return res.status(403).json({error: "Not allowed!"});
-        
         try{
-            const doc = await UserService.deleteOne(req.params.id);
+            const doc = await CabinserviceService.deleteOne(req.params.id);
             return res.status(200).json(doc);
         }catch (e){
             return res.status(500).json({error: e.message})
@@ -38,10 +36,8 @@ const UserController = {
         
     },
     updateOne: async (req,res) => {
-        if(req.authUser.sub != req.params.id) return res.status(403).json({error: "Not allowed!"});
-        
         try{
-            const doc = await UserService.updateOne(req.params.id,req.body)
+            const doc = await CabinserviceService.updateOne(req.params.id,req.body)
             return res.status(200).json(doc);
         }catch (e){
             return res.status(500).json({error: e.message});
@@ -49,4 +45,4 @@ const UserController = {
     }
 }
 
-export default UserController;
+export default CabinserviceController;

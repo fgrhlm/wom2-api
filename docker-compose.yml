@@ -1,69 +1,79 @@
 version: "3.9"
 
 services:
-    stugmaklare-api:
-        container_name: "stugmaklare-api"
+    stugservice-api:
+        container_name: "stugservice-api"
         # Lånat lite härifrån
         # https://github.com/nodejs/docker-node/blob/main/README.md#how-to-use-this-image
         build:
             context: .
             dockerfile: app/Dockerfile
         user: node
+        environment:
+            NODE_ENV: production
         restart: unless-stopped
         ports:
-            - 8080:8080
+            - 8083:8083
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.wom2.rule=Host(`wom2.spionsatellit.com`)"
+            - "traefik.http.routers.wom2.tls.domains[0].main=wom2.spionsatellit.com"
+            - "traefik.http.routers.wom2.entrypoints=websecure"
+            - "traefik.http.routers.wom2.tls=true"
+            - "traefik.http.routers.wom2.tls.certresolver=myresolver"
+            - "traefik.http.routers.wom2.tls.options=raitiovaunu-api@file"
+            - "traefik.http.middlewares.wom1-compression.compress=true"
+            - "traefik.http.routers.wom2.middlewares=wom1-compression"
         networks:
-            stugmaklare-public:
-            stugmaklare-private:
-                ipv4_address: 10.0.0.2
+            - traefik-public
         command: "npm start"
         profiles:
-            - prod
+          - prod
 
-    stugmaklare-db:
+    stugservice-db:
         # Lånat lite därifrån
         # https://hub.docker.com/_/mongo
-        container_name: "stugmaklare-db"
+        container_name: "stugservice-db"
         image: mongo:latest
         restart: unless-stopped
         environment:
             MONGO_INITDB_ROOT_USERNAME: root
-            MONGO_INITDB_ROOT_PASSWORD: toor
+            MONGO_INITDB_ROOT_PASSWORD: toortoortoortoor11
         ports:
             - 27017:27017
         profiles:
             - prod
         networks:
-            stugmaklare-private:
-                ipv4_address: 10.0.0.3
+            - traefik-public
 
-
-    stugmaklare-api-dev:
+    stugservice-api-dev:
     # !! OBS !! INSTALLERA PAKETEN LOKALT !! OBS !! NPM INSTALL KÖRS INTE I DENNA SERVICE !! OBS !!
     # samma som api bara att koden+node_modules mountas som volym istället, byggs även direkt från
     # node:latest istället för app/Dockerfile
     # mer info https://docs.docker.com/compose/compose-file/compose-file-v3/#short-syntax-3
     # denna version kör även nodemon så koden hot-reloadas vid save
-        container_name: "stugmaklare-api-dev"
+        container_name: "stugservice-api-dev"
         image: node:latest
+        user: node
+        environment:
+            NODE_ENV: development
         restart: always
         ports:
-            - 8080:8080
+            - 8083:8083
         networks:
-            stugmaklare-public:
-            stugmaklare-private:
-                ipv4_address: 10.0.0.2
+            - traefik-public
         volumes:
             - "./app:/home/node/app"
+            - "./app/.npm:/home/node/app/.npm"
         profiles:
             - dev
         working_dir: "/home/node/app"
-        command: "npm run dev"
+        command: "npm run dev-notest"
 
-    stugmaklare-db-dev:
+    stugservice-db-dev:
         # Lånat lite därifrån
         # https://hub.docker.com/_/mongo
-        container_name: "stugmaklare-db-dev"
+        container_name: "stugservice-db-dev"
         image: mongo:latest
         restart: unless-stopped
         profiles:
@@ -74,20 +84,8 @@ services:
         ports:
             - 27017:27017
         networks:
-            stugmaklare-private:
-                ipv4_address: 10.0.0.3
+            - traefik-public
 
-# Services i stugmaklare har statiska ip addresser:
-#   api -> 10.0.0.2
-#   db  -> 10.0.0.3
 networks:
-    stugmaklare-public:
-        name: stugmaklare-public
+    traefik-public:
         external: true
-    stugmaklare-private:
-        name: stugmaklare-private
-        external: false
-        ipam:
-            driver: default
-            config:
-                - subnet: 10.0.0.0/24
